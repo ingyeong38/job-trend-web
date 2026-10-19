@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% from "_macros.html" import job_row %}
+{% block content %}
+<h2>북마크</h2>
+<section>
+  {% for p in items %}
+    {{ job_row(p) }}
+    <form method="post" action="{{ url_for('mypage.remove_bookmark', job_id=p.saramin_job_id) }}"><button class="gray">삭제</button></form>
+  {% else %}<p>북마크한 공고가 없습니다.</p>{% endfor %}
+</section>
+{% endblock %}

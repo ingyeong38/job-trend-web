@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<section>
+  <h2>로그인</h2>
+  <p><a class="btn" href="{{ url_for('auth.login_provider', provider='google') }}">Google로 로그인</a>
+     {% if not enabled.google %}<span class="muted">(키 미설정)</span>{% endif %}</p>
+  <p><a class="btn" href="{{ url_for('auth.login_provider', provider='kakao') }}">카카오로 로그인</a>
+     {% if not enabled.kakao %}<span class="muted">(키 미설정)</span>{% endif %}</p>
+</section>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% macro job_row(p, reason=None) %}
+<div class="job">
+  <div>
+    <a href="{{ url_for('jobs.detail', job_id=p.saramin_job_id) }}"><strong>{{ p.title }}</strong></a>
+    <div class="muted">{{ p.company_name }} · {{ p.location }} · {{ p.experience }}</div>
+    {% for k in p.keywords %}<span class="tag">{{ k }}</span>{% endfor %}
+    {% if reason %}<div class="muted">추천 이유: {{ reason }}</div>{% endif %}
+  </div>
+  <div class="muted">{{ p.deadline_at|dday }}</div>
+</div>
+{% endmacro %}

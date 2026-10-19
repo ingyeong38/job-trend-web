@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% from "_macros.html" import job_row %}
+{% block title %}{{ p.title }}{% endblock %}
+{% block content %}
+<section>
+  <h2>{{ p.title }}</h2>
+  <p>{{ p.company_name }} · 마감 {{ p.deadline_at }} (<strong>{{ p.deadline_at|dday }}</strong>)</p>
+  {% if rec_line %}<p class="card">{{ rec_line }}</p>{% endif %}
+  <table>
+    <tr><th>분야/직무</th><td>{{ p.field }} / {{ p.job_name }}</td></tr>
+    <tr><th>근무지</th><td>{{ p.location }}</td></tr>
+    <tr><th>경력</th><td>{{ p.experience }}</td></tr>
+    <tr><th>학력</th><td>{{ p.education }}</td></tr>
+    <tr><th>고용형태</th><td>{{ p.employment_type }}</td></tr>
+    <tr><th>급여</th><td>{{ p.salary }}</td></tr>
+    <tr><th>게시일</th><td>{{ p.posted_at }}</td></tr>
+  </table>
+  <p>{% for k in p.keywords %}<span class="tag">{{ k }}</span>{% endfor %}</p>
+  <a class="btn" href="{{ p.source_url }}" target="_blank" rel="noopener">사람인에서 자세히 보기</a>
+  {% if bookmarked %}
+    <form style="display:inline" method="post" action="{{ url_for('mypage.remove_bookmark', job_id=p.saramin_job_id) }}"><button class="gray">북마크 해제</button></form>
+  {% else %}
+    <form style="display:inline" method="post" action="{{ url_for('mypage.add_bookmark', job_id=p.saramin_job_id) }}"><button>북마크</button></form>
+  {% endif %}
+</section>
+
+<section>
+  <h3>근무 위치</h3>
+  {% if kakao_key and p.lat is not none and p.lng is not none %}
+    <div id="map"></div>
+    <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey={{ kakao_key }}"></script>
+    <script>
+      var pos = new kakao.maps.LatLng({{ p.lat }}, {{ p.lng }});
+      var map = new kakao.maps.Map(document.getElementById('map'), {center: pos, level: 4});
+      new kakao.maps.Marker({position: pos, map: map});
+    </script>
+  {% else %}
+    <p>{{ p.location }}</p>
+  {% endif %}
+</section>
+
+<section>
+  <h3>{{ p.job_name }} 키워드 인기 순위</h3>
+  <ol>
+    {% for rank, k, c in ranking %}
+      <li {% if k in p.keywords %}style="font-weight:bold"{% endif %}>{{ k }} <span class="muted">({{ c }}건)</span></li>
+    {% endfor %}
+  </ol>
+</section>
+
+<section>
+  <h3>같은 직무의 다른 공고</h3>
+  {% for o in others %}{{ job_row(o) }}{% else %}<p>없습니다.</p>{% endfor %}
+</section>
+{% endblock %}

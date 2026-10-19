@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% from "_macros.html" import job_row %}
+{% block content %}
+<h2>마이페이지</h2>
+<section>
+  <form method="post">
+    <h3>관심 직무</h3>
+    {% for f in fields %}
+      <p><strong>{{ f.name }}</strong><br>
+      {% for j in f.jobs %}
+        <label><input type="checkbox" name="jobs" value="{{ j.name }}" {{ 'checked' if j.name in prefs.get('jobs', []) }}> {{ j.name }}</label>
+      {% endfor %}</p>
+    {% endfor %}
+    <p>선호 지역
+      <select name="location">
+        <option value="">선택 안 함</option>
+        {% for l in locations %}<option {{ 'selected' if prefs.get('location') == l }}>{{ l }}</option>{% endfor %}
+      </select>
+      경력
+      <select name="experience">
+        <option value="">선택 안 함</option>
+        {% for e in ['신입', '경력', '경력무관'] %}<option {{ 'selected' if prefs.get('experience') == e }}>{{ e }}</option>{% endfor %}
+      </select>
+    </p>
+    <p>관심 키워드 (쉼표 구분) <input name="keywords" value="{{ prefs.get('keywords', [])|join(', ') }}"></p>
+    <button>저장</button>
+  </form>
+</section>
+{% if recs %}
+<section>
+  <h3>맞춤 추천</h3>
+  {% for p, score, reason in recs %}{{ job_row(p, reason) }}{% endfor %}
+</section>
+{% endif %}
+{% endblock %}

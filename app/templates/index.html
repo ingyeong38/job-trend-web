@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% from "_macros.html" import job_row %}
+{% block content %}
+<section>
+  <h2>요약</h2>
+  <p>{{ summary }}</p>
+</section>
+<div class="grid">
+  <section>
+    <h2>인기 키워드 Top 5</h2>
+    <ol>{% for k, c in top_keywords %}<li>{{ k }} <span class="muted">({{ c }}건)</span></li>{% endfor %}</ol>
+  </section>
+  <section>
+    <h2>직무별 공고 수</h2>
+    <ul>{% for j, c in job_counts %}
+      <li><a href="{{ url_for('jobs.list_jobs', job_name=j) }}">{{ j }}</a> {{ c }}건</li>
+    {% endfor %}</ul>
+  </section>
+</div>
+{% if recs %}
+<section>
+  <h2>맞춤 추천</h2>
+  {% for p, score, reason in recs %}{{ job_row(p, reason) }}{% endfor %}
+</section>
+{% endif %}
+<section>
+  <h2>최근 공고</h2>
+  {% for p in recent %}{{ job_row(p) }}{% endfor %}
+</section>
+{% endblock %}

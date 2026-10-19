@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}채용공고 트렌드{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header>
+  <nav>
+    <a class="brand" href="{{ url_for('main.index') }}">채용공고 트렌드</a>
+    <a href="{{ url_for('jobs.list_jobs') }}">공고</a>
+    <a href="{{ url_for('trend.page') }}">트렌드</a>
+    <a href="{{ url_for('mypage.mypage') }}">마이페이지</a>
+    <a href="{{ url_for('mypage.bookmarks') }}">북마크</a>
+    <span class="spacer"></span>
+    {% if current_user %}
+      <span>{{ current_user.name }}</span> <a href="{{ url_for('auth.logout') }}">로그아웃</a>
+    {% else %}
+      <a href="{{ url_for('auth.login') }}">로그인</a>
+    {% endif %}
+  </nav>
+</header>
+<main>
+  {% for m in get_flashed_messages() %}<p class="flash">{{ m }}</p>{% endfor %}
+  {% block content %}{% endblock %}
+</main>
+<footer>팀 프로젝트 · <a href="{{ url_for('stats.visits') }}">방문 통계</a></footer>
+</body>
+</html>

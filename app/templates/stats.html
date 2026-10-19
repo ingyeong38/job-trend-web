@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<section>
+  <h2>방문 통계</h2>
+  <p class="muted">서버 메모리 기반 (재시작 시 초기화)</p>
+  <table>
+    <tr><th>페이지</th><th>방문 수</th></tr>
+    {% for page, c in counts %}<tr><td>{{ page }}</td><td>{{ c }}</td></tr>{% endfor %}
+  </table>
+</section>
+{% endblock %}

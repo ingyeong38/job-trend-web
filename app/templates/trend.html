@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>트렌드</h2>
+<form class="filters" method="get">
+  <select name="job_name" onchange="this.form.submit()">
+    <option value="">직무 전체</option>
+    {% for j in job_names %}<option {{ 'selected' if j == job_name }}>{{ j }}</option>{% endfor %}
+  </select>
+</form>
+<section><p>{{ summary }}</p></section>
+<section><h3>키워드 Top 10</h3><canvas id="kw"></canvas></section>
+<section><h3>주차별 키워드 추이</h3><canvas id="weekly"></canvas></section>
+<div class="grid">
+  <section><h3>지역별 분포</h3><canvas id="region"></canvas></section>
+  <section><h3>경력별 분포</h3><canvas id="exp"></canvas></section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+const q = new URLSearchParams({job_name: {{ job_name|tojson }}}).toString();
+const get = (p) => fetch('/trend/api/' + p + (p.includes('?') ? '&' : '?') + q).then(r => r.json());
+
+get('keywords?n=10').then(d => new Chart('kw', {
+  type: 'bar',
+  data: {labels: d.map(x => x.keyword), datasets: [{label: '공고 수', data: d.map(x => x.count)}]},
+  options: {indexAxis: 'y'}
+}));
+get('weekly?n=5').then(d => new Chart('weekly', {
+  type: 'line',
+  data: {labels: d.weeks, datasets: Object.entries(d.series).map(([k, v]) => ({label: k, data: v}))}
+}));
+function bar(id, path) {
+  get(path).then(d => new Chart(id, {
+    type: 'bar',
+    data: {labels: d.map(x => x.label), datasets: [{label: '공고 수', data: d.map(x => x.count)}]}
+  }));
+}
+bar('region', 'regions');
+bar('exp', 'experience');
+</script>
+{% endblock %}
